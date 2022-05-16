@@ -1,23 +1,14 @@
 package run;
 
+import objects.Coordinates;
+import objects.Person;
+import objects.Resource;
+import objects.ResourceState;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
-enum ResourceState {
-    free, reserved, taken
-}
-
 public class Main {
-    public static boolean isAnyResourceFree(Resource[][] resourceGridState, int width, int length) {
-        for (int i = 0; i < width; i++) {
-            for (int k = 0; k < length; k++) {
-                if (resourceGridState[i][k].resourceState == ResourceState.free)
-                    return true;
-            }
-        }
-        return false;
-    }
-
     public static void main(String[] args) {
 
         int width, length;
@@ -51,46 +42,46 @@ public class Main {
             personsList.forEach(person -> person.setResourceAmount(0));
             for (Person person : personsList) {
                 if (person.isAlive()) {
-                    while (isAnyResourceFree(resourceGridOfResourceObjects, width, length)) {
+                    while (Resource.isAnyResourceFree(resourceGridOfResourceObjects, width, length)) {
                         Random rand = new Random();
                         int newCoordinateX = rand.nextInt(width);
                         int newCoordinateY = rand.nextInt(length);
                         person.setCoordinates(new Coordinates(newCoordinateX, newCoordinateY));
-                        if (resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].person.isEmpty()) {
+                        if (resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].getPerson().isEmpty()) {
                             person.setResourceAmount(1);
-                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].person = Optional.of(person);
-                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].resourceState = ResourceState.reserved;
+                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].setPerson(Optional.of(person));
+                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].setResourceState(ResourceState.reserved);
                             break;
                         }
                     }
-                    if (person.resourceAmount == 0) {
+                    if (person.getResourceAmount() == 0) {
                         Random rand = new Random();
                         int newCoordinateX = rand.nextInt(width);
                         int newCoordinateY = rand.nextInt(length);
-                        int opponentId = resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].person.get().id;
+                        int opponentId = resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].getPerson().get().getId();
                         Person opponent = personsList.get(opponentId);
                         if (person.getType().equals(Person.Type.neutral) && opponent.getType().equals(Person.Type.neutral)) {
                             person.setResourceAmount(0.5);
                             opponent.setResourceAmount(0.5);
-                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].resourceState = ResourceState.taken;
+                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].setResourceState(ResourceState.taken);
                         }
 
                         if (person.getType().equals(Person.Type.aggressive) && opponent.getType().equals(Person.Type.neutral)) {
                             person.setResourceAmount(1);
                             opponent.setResourceAmount(0);
-                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].resourceState = ResourceState.taken;
+                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].setResourceState(ResourceState.taken);
                         }
 
                         if (person.getType().equals(Person.Type.neutral) && opponent.getType().equals(Person.Type.aggressive)) {
                             person.setResourceAmount(0);
                             opponent.setResourceAmount(1);
-                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].resourceState = ResourceState.taken;
+                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].setResourceState(ResourceState.taken);
                         }
 
                         if (person.getType().equals(Person.Type.aggressive) && opponent.getType().equals(Person.Type.aggressive)) {
                             person.setResourceAmount(0);
                             opponent.setResourceAmount(0);
-                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].resourceState = ResourceState.taken;
+                            resourceGridOfResourceObjects[newCoordinateX][newCoordinateY].setResourceState(ResourceState.taken);
                         }
                     }
                 }
@@ -116,7 +107,7 @@ public class Main {
             }
 
             for (int k = 0; k < personsList.size(); k++) {
-                if (personsList.get(k).isAlive) {
+                if (personsList.get(k).isAlive()) {
                     if (personsList.get(k).getResourceAmount() == 1) {
                         personsList.add(new Person(0, personsList.size(), personsList.get(k).getType(), 0, true, new Coordinates(0, 0)));
                     }
@@ -132,150 +123,5 @@ public class Main {
         }
 
 
-    }
-}
-
-class Person {
-    int age;
-    int id;
-    Type type;
-    double resourceAmount;
-    boolean isAlive;
-    Coordinates coordinates;
-
-    public Person(int age, int id, Type type, double resourceAmount, boolean isAlive, Coordinates coordinates) {
-        this.age = age;
-        this.id = id;
-        this.type = type;
-        this.resourceAmount = resourceAmount;
-        this.isAlive = isAlive;
-        this.coordinates = coordinates;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "age=" + age +
-                ", id=" + id +
-                ", type=" + type +
-                ", resourceAmount=" + resourceAmount +
-                ", isAlive=" + isAlive +
-                ", coordinates=" + coordinates +
-                '}';
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public void setAge(int age) {
-        this.age = age;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public double getResourceAmount() {
-        return resourceAmount;
-    }
-
-    public void setResourceAmount(double resourceAmount) {
-        this.resourceAmount = resourceAmount;
-    }
-
-    public boolean isAlive() {
-        return isAlive;
-    }
-
-    public void setAlive(boolean alive) {
-        isAlive = alive;
-    }
-
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    enum Type {
-        neutral,
-        aggressive
-    }
-}
-
-class Coordinates {
-    int x;
-    int y;
-
-    public Coordinates(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-}
-
-class Resource {
-    Coordinates coordinates;
-    ResourceState resourceState;
-    Optional<Person> person;
-
-    public Resource(Coordinates coordinates, ResourceState resourceState, Optional<Person> person) {
-        this.coordinates = coordinates;
-        this.resourceState = resourceState;
-        this.person = person;
-    }
-
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(Coordinates coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    public ResourceState getResourceState() {
-        return resourceState;
-    }
-
-    public void setResourceState(ResourceState resourceState) {
-        this.resourceState = resourceState;
-    }
-
-    public Optional<Person> getPerson() {
-        return person;
-    }
-
-    public void setPerson(Optional<Person> person) {
-        this.person = person;
     }
 }
