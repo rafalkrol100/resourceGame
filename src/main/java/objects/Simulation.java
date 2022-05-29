@@ -1,12 +1,15 @@
 package objects;
 
-import java.util.Optional;
-import java.util.Random;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class Simulation {
-    public static void runSimulation(int width, int length, Resource[][] resourceGridOfResourceObjects, int numberOfRepetitions, boolean writeObject) {
+    public static ArrayList<ArrayList<Integer>> runSimulation(int width, int length, Resource[][] resourceGridOfResourceObjects, int numberOfRepetitions, boolean writeObject) {
+        ArrayList<Integer> neutralList = new ArrayList<>();
+        ArrayList<Integer> aggressiveList = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> returnList = new ArrayList<>();
         for (int i = 0; i < numberOfRepetitions; i++) {
+
             ResourceGrid.resetResourceGridOfResourceObjects(width, length, resourceGridOfResourceObjects);
             Person.personsList.forEach(person -> person.setResourceAmount(0));
             for (Person person : Person.personsList) {
@@ -18,7 +21,9 @@ public class Simulation {
             int countNeutral = (int) Person.personsList.stream().filter(person -> person.getType().equals(Person.Type.neutral) && person.isAlive()).count();
 //            System.out.println("Number of aggressive persons during day: " + i + " is equal to: " + countAggressive);
 //            System.out.println("Number of neutral persons during day: " + i + " is equal to: " + countNeutral);
-            ChartCreator.print(countAggressive, countNeutral);
+            PersonsCounter.print(countAggressive, countNeutral);
+            neutralList.add(countNeutral);
+            aggressiveList.add(countAggressive);
 
 
             for (Person person : Person.personsList) {
@@ -47,6 +52,8 @@ public class Simulation {
 
             }
         }
+        returnList.add(neutralList);
+        returnList.add(aggressiveList);
+        return returnList;
     }
-
 }

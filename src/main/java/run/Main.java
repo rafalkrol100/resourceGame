@@ -2,6 +2,9 @@ package run;
 
 import objects.*;
 
+import javax.swing.*;
+import java.util.ArrayList;
+
 public class Main {
     public static void main(String[] args) {
         int initialNumberOfNeutrals = 3;
@@ -15,10 +18,16 @@ public class Main {
         Resource[][] resourceGridOfResourceObjects = resourceGrid.getResourceGridOfResourceObjects();
 
         Person.initiatePersons(initialNumberOfNeutrals, initialNumberOfAggressive);
-        Simulation.runSimulation(width, length, resourceGridOfResourceObjects, numberOfRepetitions, writeObject);
+        ArrayList<ArrayList<Integer>> list = Simulation.runSimulation(width, length, resourceGridOfResourceObjects, numberOfRepetitions, writeObject);
+        ArrayList<Integer> neutralList = list.get(0);
+        ArrayList<Integer> aggressiveList = list.get(1);
 
-        PieChart demo = new PieChart("Comparison", "Which operating system are you using?");
-        demo.pack();
-        demo.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            TimeSeriesChartExample example = new TimeSeriesChartExample("Time Series Chart", neutralList, aggressiveList);
+            example.setSize(800, 400);
+            example.setLocationRelativeTo(null);
+            example.setVisible(true);
+            example.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        });
     }
 }
