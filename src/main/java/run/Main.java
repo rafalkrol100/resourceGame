@@ -23,7 +23,7 @@ public class Main {
         ArrayList<Integer> aggressiveList = list.get(1);
 
         SwingUtilities.invokeLater(() -> {
-            TimeSeriesChartExample example = new TimeSeriesChartExample("Time Series Chart", neutralList, aggressiveList);
+            TimeSeriesChart example = new TimeSeriesChart("Time Series Chart", neutralList, aggressiveList);
             example.setSize(800, 400);
             example.setLocationRelativeTo(null);
             example.setVisible(true);

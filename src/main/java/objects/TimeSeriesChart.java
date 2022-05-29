@@ -13,11 +13,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class TimeSeriesChartExample extends JFrame {
+public class TimeSeriesChart extends JFrame {
 
     private static final long serialVersionUID = 1L;
 
-    public TimeSeriesChartExample(String title, ArrayList<Integer> neutralList, ArrayList<Integer> aggressiveList) {
+    public TimeSeriesChart(String title, ArrayList<Integer> neutralList, ArrayList<Integer> aggressiveList) {
         super(title);
         // Create dataset
         XYDataset dataset = createDataset(neutralList, aggressiveList);
