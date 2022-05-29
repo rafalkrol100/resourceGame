@@ -18,7 +18,7 @@ public class Simulation {
             int countNeutral = (int) Person.personsList.stream().filter(person -> person.getType().equals(Person.Type.neutral) && person.isAlive()).count();
 //            System.out.println("Number of aggressive persons during day: " + i + " is equal to: " + countAggressive);
 //            System.out.println("Number of neutral persons during day: " + i + " is equal to: " + countNeutral);
-            System.out.println("aggressive - " + countAggressive + " : " + countNeutral + " - neutral");
+            ChartCreator.print(countAggressive, countNeutral);
 
 
             for (Person person : Person.personsList) {
