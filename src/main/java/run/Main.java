@@ -16,5 +16,9 @@ public class Main {
 
         Person.initiatePersons(initialNumberOfNeutrals, initialNumberOfAggressive);
         Simulation.runSimulation(width, length, resourceGridOfResourceObjects, numberOfRepetitions, writeObject);
+
+        PieChart demo = new PieChart("Comparison", "Which operating system are you using?");
+        demo.pack();
+        demo.setVisible(true);
     }
 }
